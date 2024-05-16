@@ -16,6 +16,17 @@ export default function Signin() {
     let loginButton;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+
+    useEffect(() => {
+        if (email.trim() !== '') {
+            setEmailError('');
+        }
+        if (password.trim() !== '') {
+            setPasswordError('');
+        }
+    }, [email, password]);
 
     if (user) {
         router.push("/");
@@ -26,7 +37,15 @@ export default function Signin() {
     }
 
     loginButton = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        if (email.trim() === '') {
+            setEmailError('Please input your email');
+            return;
+        }
+        if (password.trim() === '') {
+            setPasswordError('Please input your password');
+            return;
+        }
         const auth = getAuth();
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
@@ -36,8 +55,15 @@ export default function Signin() {
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
+                if (errorCode === 'auth/wrong-password') {
+                    setPasswordError('Incorrect email or password');
+                } else {
+                    setPasswordError(errorMessage);
+                }
             });
     }
+    
+
     return (
         <div className="w-screen h-[150vh] md:h-[75vh]">
             <h1 className="text-2xl pt-32 text-center">Sign in</h1>
@@ -46,8 +72,10 @@ export default function Signin() {
                 <div className="">
                     <h1 className="pt-4 pb-2 text-lg">Email:</h1>
                     <input type="text" className="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg block w-full p-2.5" id="1" value={email} onChange={(e) => setEmail(e.target.value)}></input>
+                    {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                     <h1 className="pt-4 pb-2 text-lg">Password:</h1>
                     <input type="password" className="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg block w-full p-2.5" id="2" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+                    {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                     <div className="">
                         <button onClick={loginButton} className="rounded-md hover:bg-[#aa8a40] active:bg-[#977b39] bg-[#BD9A48] mt-6 p-2 text-center text-white">Sign in</button>
                         <button className="ml-4 px-2 text-lg active:bg-[#cccccc] hover:bg-[#e5e5e5] hover:rounded">Forgot Password?</button>

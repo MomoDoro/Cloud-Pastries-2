@@ -7,6 +7,7 @@ import { addDoc, getDocs, getDoc, collection, doc } from 'firebase/firestore';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import { MdLocationOn } from "react-icons/md";
 import "./Checkout.css";
+import Checkoutnotif from "./Checkoutnotif";
 
 export const Checkout = () => {
   const app = initFirebase();
@@ -253,7 +254,8 @@ export const Checkout = () => {
         <h2>Total Payment (PHP)</h2>
         <h2>₱{(calculateTotalPrice(documents) + 40.00).toFixed(2)}</h2>
       </div>
-      <button className="check-place-order-button" onClick={handlePlaceOrder}>PLACE ORDER</button>
+      <Checkoutnotif onClick={handlePlaceOrder}/>
+      {/*<button className="check-place-order-button" onClick={handlePlaceOrder}>PLACE ORDER</button>*/}
     </div>
   );
 };
